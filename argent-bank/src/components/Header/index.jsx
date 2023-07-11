@@ -1,5 +1,6 @@
 import Styled from "styled-components";
 import argentBankLogo from "../../assets/argentBankLogo.png";
+import { NavLink } from 'react-router-dom'
 
 const HeaderLogo = Styled.img`
 max-width: 100%;
@@ -15,7 +16,7 @@ const NavItem = Styled.div`
   margin-right: 0.5rem;
   &:hover{text-decoration: underline;}
 `;
-const NavLink = Styled.a`
+const StyledNavLink = Styled(NavLink)`
 font-weight: bold;
   color: #2c3e50;
   text-decoration: none;
@@ -31,12 +32,12 @@ const Header = () => {
     <HeaderNav>
       <HeaderLogo src={argentBankLogo} alt="Argent Bank Logo" />
       <NavItem>
-        <NavLink href="#">
+        <StyledNavLink to="/signIn">
           <LinkLogo>
             <i className="fa fa-user-circle"></i>
           </LinkLogo>
           <LinkText>Sign In</LinkText>
-        </NavLink>
+        </StyledNavLink>
       </NavItem>
     </HeaderNav>
   );

@@ -1,6 +1,7 @@
 import { createGlobalStyle } from "styled-components";
 
 const GlobaleStyles = createGlobalStyle`
+root{flex:1}
 html {font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -11,5 +12,6 @@ html {font-family: Avenir, Helvetica, Arial, sans-serif;
     display: flex;
     flex-direction: column;
     min-height: 100vh;}
+
 `;
 export default GlobaleStyles;

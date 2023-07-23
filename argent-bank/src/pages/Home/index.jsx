@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import Banner from "../../components/Banner";
 import InfoCard from "../../components/InfoCard";
 import chatLogo from "../../assets/icon-chat.png";
 import moneyLogo from "../../assets/icon-money.png";
 import securityLogo from "../../assets/icon-security.png";
+import {useNavigate} from "react-router-dom";
+import { useSelector } from "react-redux";
+
 
 const HomeConatainer = styled.div`
   display: flex;
@@ -12,6 +15,16 @@ const HomeConatainer = styled.div`
 `;
 
 function Home() {
+
+  const navigate = useNavigate();
+  const token = useSelector((state) => state.user.token);
+
+  useEffect(() => {
+    if (token) {
+      navigate("/user");
+    }
+  }, [token, navigate]);
+
   return (
     <HomeConatainer>
       <Banner />

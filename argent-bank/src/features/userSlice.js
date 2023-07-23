@@ -4,14 +4,18 @@ import {
   fetchUserProfile,
 } from "../userAPI/userAPI";
 
+
 //create async action for user connection
 
 export const loginUser = createAsyncThunk(
   "user/login",
-  async (loginCredentials) => {
+  async (loginCredentials, { getState }) => {
     const data = await loginUserAPI(loginCredentials);
     const userProfile = await fetchUserProfile(data.body.token);
-    console.log("user", userProfile.body);
+
+    if (getState().user.rememberMe) {
+      localStorage.setItem("token", data.body.token);
+    }
 
     return { token: data.body.token, user: userProfile.body };
   }
@@ -38,13 +42,9 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.token = action.payload;
+        state.token = action.payload.token;
         state.loggedIn = true;
         state.user = action.payload.user;
-        if (state.rememberMe) {
-          //if rememberMe is true, store token in localStorage
-          localStorage.setItem("token", action.payload);
-        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = "failed";

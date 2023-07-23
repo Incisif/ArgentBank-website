@@ -2,6 +2,11 @@ import Styled from "styled-components";
 import argentBankLogo from "../../assets/argentBankLogo.png";
 import { NavLink } from 'react-router-dom'
 
+const LogoContainer = Styled(NavLink)`
+cursor: pointer;
+
+`
+
 const HeaderLogo = Styled.img`
 max-width: 100%;
   width: 200px;
@@ -30,7 +35,9 @@ font-size: 16px;
 const Header = () => {
   return (
     <HeaderNav>
+      <LogoContainer to="/">
       <HeaderLogo src={argentBankLogo} alt="Argent Bank Logo" />
+      </LogoContainer>
       <NavItem>
         <StyledNavLink to="/signIn">
           <LinkLogo>

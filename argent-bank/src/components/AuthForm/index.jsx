@@ -55,8 +55,8 @@ const Button = styled.button`
 `;
 function AuthForm() {
   const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.auth.loggedIn);
-  const rememberMe = useSelector((state) => state.auth.rememberMe)
+  const loggedIn = useSelector((state) => state.user.loggedIn);
+  const rememberMe = useSelector((state) => state.user.rememberMe)
   const navigate = useNavigate();
 
   const [email, setUsername] = useState("");

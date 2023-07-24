@@ -12,9 +12,11 @@ export const loginUser = createAsyncThunk(
   async (loginCredentials, { getState }) => {
     const data = await loginUserAPI(loginCredentials);
     const userProfile = await fetchUserProfile(data.body.token);
+    
 
     if (getState().user.rememberMe) {
       localStorage.setItem("token", data.body.token);
+      localStorage.setItem("user", JSON.stringify(userProfile.body));
     }
 
     return { token: data.body.token, user: userProfile.body };
@@ -25,15 +27,23 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     loggedIn: false,
-    user: null,
+    user: JSON.parse(localStorage.getItem("user")) || null,
+    token: localStorage.getItem("token") || null,
     rememberMe: false,
     error: null,
-    token: null,
   }, // initial state
   reducers: {
     toggleRememberMe: (state) => {
       state.rememberMe = !state.rememberMe;
     },
+    logout: (state) => {
+      state.loggedIn = false;
+      state.user = null;
+      state.token = null;
+      state.rememberMe = false;
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -54,5 +64,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { toggleRememberMe } = userSlice.actions;
+export const { toggleRememberMe, logout } = userSlice.actions;
 export default userSlice.reducer;

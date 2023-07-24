@@ -18,10 +18,11 @@ function Home() {
 
   const navigate = useNavigate();
   const token = useSelector((state) => state.user.token);
-
+  
   useEffect(() => {
-    if (token) {
+    if (token && !sessionStorage.getItem('firstLoadDone')) {
       navigate("/user");
+      sessionStorage.setItem('firstLoadDone', true);
     }
   }, [token, navigate]);
 

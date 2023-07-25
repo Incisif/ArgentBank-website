@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import AccountSection from "../../components/AccountSection";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import EditInfosForm from "../../components/EditInfosForm";
+
 
 const UserContainer = styled.div`
   background-color: #12002b;
@@ -30,23 +31,30 @@ const EditButton = styled.button`
 
 function User() {
   const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
   const userName = user ? user.firstName + " " + user.lastName : null;
   const [isFormVisible, setFormVisible] = useState(false);
 
-  const handleEdit = () => {
+  const handleEditMode = () => {
     setFormVisible(!isFormVisible);
   };
+  const handleSave = () => {
+    setFormVisible(!isFormVisible);
+  };
+  const handleCancel = () => {
+    setFormVisible(!isFormVisible);
+  }
 
   return (
     <UserContainer>
-      <EditInfosForm></EditInfosForm>
+      {isFormVisible ?<EditInfosForm handleSave={handleSave} handleCancel={handleCancel}></EditInfosForm> : null}
       {!isFormVisible ? (
         <>
           <UserTitle>
             Welcome back
             {userName ? <UserName>{userName} !</UserName> : null}
           </UserTitle>
-          <EditButton onClick={handleEdit}>Edit name</EditButton>
+          <EditButton onClick={handleEditMode}>Edit name</EditButton>
         </>
       ) : null}
       <AccountSection

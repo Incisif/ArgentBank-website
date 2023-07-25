@@ -2,8 +2,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   loginUser as loginUserAPI,
   fetchUserProfile,
+  updateUsername as editUserAPI,
 } from "../userAPI/userAPI";
-
 
 //create async action for user connection
 
@@ -12,7 +12,6 @@ export const loginUser = createAsyncThunk(
   async (loginCredentials, { getState }) => {
     const data = await loginUserAPI(loginCredentials);
     const userProfile = await fetchUserProfile(data.body.token);
-    
 
     if (getState().user.rememberMe) {
       localStorage.setItem("token", data.body.token);
@@ -20,6 +19,17 @@ export const loginUser = createAsyncThunk(
     }
 
     return { token: data.body.token, user: userProfile.body };
+  }
+);
+export const editUser = createAsyncThunk(
+  "user/edit",
+  async ({ token, userName }, thunkAPI) => {
+    try {
+      const response = await editUserAPI(token, userName);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
   }
 );
 
@@ -43,7 +53,7 @@ const userSlice = createSlice({
       state.rememberMe = false;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-    }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -60,6 +70,16 @@ const userSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
         state.loggedIn = false;
+      })
+      .addCase(editUser.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(editUser.fulfilled, (state) => {
+        state.status = "succeeded";
+      })
+      .addCase(editUser.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
       });
   },
 });

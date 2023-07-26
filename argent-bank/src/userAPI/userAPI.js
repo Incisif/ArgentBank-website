@@ -28,6 +28,7 @@ export async function fetchUserProfile(token) {
 
   if (response.ok) {
     const data = await response.json();
+    console.log(data);
     return data;
   } else {
     throw new Error("Failed to fetch user profile");
@@ -41,7 +42,7 @@ export async function updateUsername(token, userName) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(userName),
+    body: JSON.stringify({userName}),
   });
   if (response.ok) {
     const data = await response.json();

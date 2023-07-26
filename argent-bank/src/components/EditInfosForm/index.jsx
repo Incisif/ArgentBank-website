@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch  } from "react-redux";
+import { updateUserName } from "../../features/userSlice";
 
 const Container = styled.section`
   width: 350px;
@@ -15,11 +16,14 @@ const Form = styled.form`
   flex-direction: column;
   align-items: center;
 `;
+
 const FieldContainer = styled.div`
   display: flex;
   align-items: center;
 `;
+
 const Label = styled.label``;
+
 const Input = styled.input`
   height: 2rem;
   border-radius: 5px;
@@ -28,11 +32,13 @@ const Input = styled.input`
     background-color: #c4c4c4;
   }
 `;
+
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 1rem;
 `;
+
 const Button = styled.button`
   width: 40%;
   padding: 8px;
@@ -43,10 +49,17 @@ const Button = styled.button`
   background-color: #00bc77;
   color: #fff;
 `;
+
 function EditInfosForm({ handleSave, handleCancel }) {
   const user = useSelector((state) => state.user.user);
+  const dispatch = useDispatch();
   const firstName = user.firstName;
   const lastName = user.lastName;
+  const userName = user.userName;
+
+  const handleChange=(e) => dispatch(updateUserName(e.target.value))
+  
+
   return (
     <Container>
       <Title> Edit user info</Title>
@@ -57,7 +70,9 @@ function EditInfosForm({ handleSave, handleCancel }) {
             type="text"
             id="username"
             name="username"
-            placeholder="User name"
+            placeholder={userName}
+            defaultValue={userName}
+            onChange={handleChange}
           ></Input>
         </FieldContainer>
         <FieldContainer>
@@ -88,4 +103,5 @@ function EditInfosForm({ handleSave, handleCancel }) {
     </Container>
   );
 }
+
 export default EditInfosForm;

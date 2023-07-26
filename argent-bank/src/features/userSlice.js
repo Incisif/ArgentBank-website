@@ -9,18 +9,32 @@ import {
 
 export const loginUser = createAsyncThunk(
   "user/login",
-  async (loginCredentials, { getState }) => {
+  async (loginCredentials, { getState,dispatch }) => {
     const data = await loginUserAPI(loginCredentials);
-    const userProfile = await fetchUserProfile(data.body.token);
-
+    const response = await fetchUserProfile(data.body.token);
     if (getState().user.rememberMe) {
       localStorage.setItem("token", data.body.token);
-      localStorage.setItem("user", JSON.stringify(userProfile.body));
     }
-
-    return { token: data.body.token, user: userProfile.body };
+    return { token: data.body.token, user: response.body };
   }
 );
+
+export const fetchUser = createAsyncThunk(
+  "user/fetch",
+  async (token, { getState }) => {
+    const {
+      body: { userName, firstName, lastName },
+    } = await fetchUserProfile(token);
+    if (getState().user.rememberMe) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ userName, firstName, lastName })
+      );
+    }
+    return { user: { userName, firstName, lastName } };
+  }
+);
+
 export const editUser = createAsyncThunk(
   "user/edit",
   async ({ token, userName }, thunkAPI) => {
@@ -37,8 +51,13 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     loggedIn: false,
-    user: JSON.parse(localStorage.getItem("user")) || null,
-    token: localStorage.getItem("token") || null,
+    user: JSON.parse(localStorage.getItem("user"))
+      ? {
+          userName: JSON.parse(localStorage.getItem("user")).userName,
+          firstName: JSON.parse(localStorage.getItem("user")).firstName,
+          lastName: JSON.parse(localStorage.getItem("user")).lastName,
+        }
+      : null,
     rememberMe: false,
     error: null,
   }, // initial state
@@ -46,11 +65,14 @@ const userSlice = createSlice({
     toggleRememberMe: (state) => {
       state.rememberMe = !state.rememberMe;
     },
+    updateUserName: (state, action) => {
+      state.user.userName = action.payload;
+    },
     logout: (state) => {
       state.loggedIn = false;
       state.user = null;
-      state.token = null;
       state.rememberMe = false;
+      state.token = null;
       localStorage.removeItem("token");
       localStorage.removeItem("user");
     },
@@ -61,9 +83,9 @@ const userSlice = createSlice({
         state.status = "loading";
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.status = "succeeded";
-        state.token = action.payload.token;
+        state.loading = false;
         state.loggedIn = true;
+        state.token = action.payload.token;
         state.user = action.payload.user;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -84,5 +106,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { toggleRememberMe, logout } = userSlice.actions;
+export const { toggleRememberMe, logout, updateUserName } = userSlice.actions;
 export default userSlice.reducer;

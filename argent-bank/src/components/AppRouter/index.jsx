@@ -1,9 +1,9 @@
-import React ,{useEffect} from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useNavigate
+  useNavigate,
 } from "react-router-dom";
 import styled from "styled-components";
 import Footer from "../Footer";
@@ -21,14 +21,14 @@ const AppContainer = styled.div`
 `;
 
 function ProtectedRoute() {
-  const user = useSelector((state) => state.user.user);
   const navigate = useNavigate();
+  const { user, status } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (!user) {
+    if (status !== "loading" && !user) {
       navigate("/signIn");
     }
-  }, [user, navigate]);
+  }, [user, status, navigate]);
 
   return user ? <User /> : null;
 }

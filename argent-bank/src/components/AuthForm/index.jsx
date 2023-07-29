@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser, toggleRememberMe } from "../../features/userSlice";
+import {
+  loginUser,
+  toggleRememberMe,
+  fetchUser,
+} from "../../features/userSlice";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -55,7 +59,7 @@ const Button = styled.button`
 `;
 function AuthForm() {
   const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.user.loggedIn);
+  const user = useSelector((state) => state.user.user);
   const rememberMe = useSelector((state) => state.user.rememberMe);
   const navigate = useNavigate();
 
@@ -71,17 +75,19 @@ function AuthForm() {
     }
   };
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     const loginCredentials = { email, password };
-    dispatch(loginUser(loginCredentials));
+    await dispatch(loginUser(loginCredentials));
+    const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+    dispatch(fetchUser(token));
   };
 
   useEffect(() => {
-    if (loggedIn) {
+    if (user) {
       navigate("/user");
     }
-  }, [loggedIn, navigate]);
+  }, [user, navigate]);
 
   return (
     <Container>
@@ -118,7 +124,6 @@ function AuthForm() {
           <RememberMeLabel htmlFor="rememberMe">Remember me</RememberMeLabel>
         </RememberMeWrapper>
         <Button type="submit">Sign In</Button>
-
       </Form>
     </Container>
   );

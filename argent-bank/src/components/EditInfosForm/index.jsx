@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useSelector, useDispatch  } from "react-redux";
-import { updateUserName } from "../../features/userSlice";
+import { updateEditingUserName } from "../../features/userSlice";
 
 const Container = styled.section`
   width: 350px;
@@ -57,7 +57,7 @@ function EditInfosForm({ handleSave, handleCancel }) {
   const lastName = user.lastName;
   const userName = user.userName;
 
-  const handleChange=(e) => dispatch(updateUserName(e.target.value))
+  const handleChange = (e) => dispatch(updateEditingUserName(e.target.value));
   
 
   return (

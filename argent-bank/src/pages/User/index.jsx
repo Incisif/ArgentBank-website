@@ -33,22 +33,31 @@ const EditButton = styled.button`
 `;
 
 function User() {
+  // Get user details from the redux store
   const user = useSelector((state) => state.user.user);
   const userFullName = user ? user.firstName + " " + user.lastName : null;
-  const userName = useSelector((state) => state.user.user.userName);
+  const userName = useSelector((state) => state.user.user?.userName);
   const dispatch = useDispatch();
+
+  // Local state to toggle the form visibility
   const [isFormVisible, setFormVisible] = useState(false);
 
+  // Handler to toggle form visibility
   const handleEditMode = () => {
     setFormVisible(!isFormVisible);
   };
 
+  // Handler to save the updated user name
   const handleSave = () => {
     setFormVisible(!isFormVisible);
-    const token = localStorage.getItem("token")
-    dispatch(editUser({userName, token}))
-  };
+    // Retrieve the token from either localStorage or sessionStorage
+    const token =
+      localStorage.getItem("token") || sessionStorage.getItem("token");
+    // Dispatch the editUser action with the new user name and the retrieved token
 
+    dispatch(editUser({ userName, token }));
+  };
+  // Handler to cancel the edit mode and hide the form
   const handleCancel = () => {
     setFormVisible(!isFormVisible);
   };
@@ -56,7 +65,7 @@ function User() {
   return (
     <UserContainer>
       {isFormVisible ? (
-        <EditInfosForm handleSave={handleSave} handleCancel={handleCancel} />
+        <EditInfosForm handleSave={handleSave} handleCancel={handleCancel} /> // Display the edit form if isFormVisible is true, otherwise display the user details and the edit button
       ) : null}
       {!isFormVisible ? (
         <>
@@ -67,14 +76,8 @@ function User() {
           <EditButton onClick={handleEditMode}>Edit name</EditButton>
         </>
       ) : null}
-      <AccountSection
-        title="Argent Bank Checking (x8349)"
-        amount="$2,082.79"
-      />
-      <AccountSection
-        title="Argent Bank Savings (x6712)"
-        amount="$10,928.42"
-      />
+      <AccountSection title="Argent Bank Checking (x8349)" amount="$2,082.79" />
+      <AccountSection title="Argent Bank Savings (x6712)" amount="$10,928.42" />
       <AccountSection
         title="Argent Bank Credit Card (x8349)"
         amount="$184.30"

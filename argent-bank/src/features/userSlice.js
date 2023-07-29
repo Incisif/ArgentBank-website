@@ -5,26 +5,32 @@ import {
   updateUsername as editUserAPI,
 } from "../userAPI/userAPI";
 
-//create async action for user connection
-
+// Async action to log in the user
 export const loginUser = createAsyncThunk(
   "user/login",
-  async (loginCredentials, { getState,dispatch }) => {
+  async (loginCredentials, { getState }) => {
     const data = await loginUserAPI(loginCredentials);
-    const response = await fetchUserProfile(data.body.token);
+    const token = data.body.token;
+
     if (getState().user.rememberMe) {
-      localStorage.setItem("token", data.body.token);
+      localStorage.setItem("token", token);
+    } else {
+      sessionStorage.setItem("token", token);
     }
-    return { token: data.body.token, user: response.body };
+
+    return { token };
   }
 );
 
+// Async action to fetch user's profile
 export const fetchUser = createAsyncThunk(
   "user/fetch",
   async (token, { getState }) => {
+    // Fetch user profile from API with provided token
     const {
       body: { userName, firstName, lastName },
     } = await fetchUserProfile(token);
+    // If "remember me" is true, store the user info in localStorage
     if (getState().user.rememberMe) {
       localStorage.setItem(
         "user",
@@ -35,10 +41,12 @@ export const fetchUser = createAsyncThunk(
   }
 );
 
+// Async action to edit user's profile
 export const editUser = createAsyncThunk(
   "user/edit",
-  async ({ token, userName }, thunkAPI) => {
+  async ({token, userName}, thunkAPI) => {
     try {
+      // Fetch edit user API with provided token and new username
       const response = await editUserAPI(token, userName);
       return response;
     } catch (error) {
@@ -47,10 +55,21 @@ export const editUser = createAsyncThunk(
   }
 );
 
+// Helper function to set loading state
+const startLoading = (state) => {
+  state.status = "loading";
+};
+
+// Helper function to handle failed state and error
+const loadingFailed = (state, action) => {
+  state.status = "failed";
+  state.error = action.payload;
+};
+
+// User slice with reducers and async actions
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    loggedIn: false,
     user: JSON.parse(localStorage.getItem("user"))
       ? {
           userName: JSON.parse(localStorage.getItem("user")).userName,
@@ -58,18 +77,25 @@ const userSlice = createSlice({
           lastName: JSON.parse(localStorage.getItem("user")).lastName,
         }
       : null,
+    editingUser: null,
     rememberMe: false,
     error: null,
-  }, // initial state
+  },
   reducers: {
+    // Toggle the "remember me" state
     toggleRememberMe: (state) => {
       state.rememberMe = !state.rememberMe;
     },
+    // Update the username in the state
     updateUserName: (state, action) => {
       state.user.userName = action.payload;
     },
+    // Update the editing username in the state
+    updateEditingUserName: (state, action) => {
+      state.editingUser = action.payload;
+    },
+    // Logout user and clean up state and localStorage
     logout: (state) => {
-      state.loggedIn = false;
       state.user = null;
       state.rememberMe = false;
       state.token = null;
@@ -79,32 +105,28 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(loginUser.pending, (state) => {
-        state.status = "loading";
-      })
+      // Handle the different states of async actions with helper functions and specific logic
+      .addCase(loginUser.pending, startLoading)
+      .addCase(loginUser.rejected, loadingFailed)
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.loggedIn = true;
         state.token = action.payload.token;
         state.user = action.payload.user;
       })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-        state.loggedIn = false;
+      .addCase(fetchUser.pending, startLoading)
+      .addCase(fetchUser.rejected, loadingFailed)
+      .addCase(fetchUser.fulfilled, (state, action) => {
+        state.user = action.payload.user;
       })
-      .addCase(editUser.pending, (state) => {
-        state.status = "loading";
-      })
+      .addCase(editUser.pending, startLoading)
+      .addCase(editUser.rejected, loadingFailed)
       .addCase(editUser.fulfilled, (state) => {
+        state.user.userName = state.editingUser;
+        state.editingUser = null;
         state.status = "succeeded";
       })
-      .addCase(editUser.rejected, (state, action) => {
-        state.status = "failed";
-        state.error = action.payload;
-      });
   },
 });
 
-export const { toggleRememberMe, logout, updateUserName } = userSlice.actions;
+// Export actions and reducer
+export const { toggleRememberMe, logout, updateUserName, updateEditingUserName  } = userSlice.actions;
 export default userSlice.reducer;

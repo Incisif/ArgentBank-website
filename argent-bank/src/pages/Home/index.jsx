@@ -7,12 +7,18 @@ import moneyLogo from "../../assets/icon-money.png";
 import securityLogo from "../../assets/icon-security.png";
 import {useNavigate} from "react-router-dom";
 import { useSelector } from "react-redux";
+import { device } from "../../utils/styles/devices";
 
 
 const HomeConatainer = styled.div`
-  display: flex;
-  flex-direction: column;
 `;
+const CardContainer = styled.div`
+display: flex;
+  flex-direction: column;
+  @media ${device.laptop} {
+    flex-direction: row;
+  }
+`
 
 function Home() {
 
@@ -29,6 +35,7 @@ function Home() {
   return (
     <HomeConatainer>
       <Banner />
+      <CardContainer>
       <InfoCard
         logo={chatLogo}
         alt="chat logo"
@@ -48,6 +55,7 @@ function Home() {
         title="Security you can trust"
         text="We use top of the line encryption to make sure your data and money is always safe."
       />
+      </CardContainer>
     </HomeConatainer>
   );
 }

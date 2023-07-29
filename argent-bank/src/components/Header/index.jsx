@@ -1,13 +1,10 @@
 import Styled from "styled-components";
 import argentBankLogo from "../../assets/argentBankLogo.png";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch  } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../features/userSlice";
 
-
 const LogoContainer = Styled(NavLink)`
-cursor: pointer;
-
 `;
 
 const HeaderLogo = Styled.img`
@@ -22,12 +19,15 @@ display: flex;
 `;
 const NavItem = Styled.div`
   margin-right: 0.5rem;
+  cursor: pointer;
   
 `;
 const StyledNavLink = Styled(NavLink)`
 font-weight: bold;
   color: #2c3e50;
   text-decoration: none;
+  margin-right: 0.5rem;
+  &:hover{text-decoration: underline;}
 `;
 const LinkText = Styled.span`
 margin-left: 5px;
@@ -35,27 +35,27 @@ margin-left: 5px;
 
 const LinkLogo = Styled.i`
 font-size: 16px;
+margin-right: 0.5rem;
 `;
 const Logout = Styled.span`
 font-weight: bold;
   color: #2c3e50;
+  margin-right: 0.5rem;
 &:hover{text-decoration: underline;}
 `;
-
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const loggedIn = useSelector((state) => state.user.loggedIn);
-  
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     navigate("/");
-    dispatch(logout())
+    dispatch(logout());
   };
   const user = useSelector((state) => state.user.user);
-  const firstName = user?.firstName;
+  const userName = user?.userName;
 
   return (
     <HeaderNav>
@@ -67,9 +67,16 @@ const Header = () => {
           <LinkLogo>
             <i className="fa fa-user-circle"></i>
           </LinkLogo>
-          {loggedIn ? firstName:<LinkText>Sign In</LinkText>}
+          {user ? userName : <LinkText>Sign In</LinkText>}
         </StyledNavLink>
-          {loggedIn &&<Logout onClick={handleLogout}><i className="fa fa-sign-out"></i>Sign out</Logout>}
+        {user && (
+          <Logout onClick={handleLogout}>
+            <LinkLogo>
+              <i className="fa fa-sign-out"></i>
+            </LinkLogo>
+            Sign out
+          </Logout>
+        )}
       </NavItem>
     </HeaderNav>
   );

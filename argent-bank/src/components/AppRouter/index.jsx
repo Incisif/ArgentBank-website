@@ -12,7 +12,8 @@ import Home from "../../pages/Home";
 import User from "../../pages/User";
 import SignIn from "../../pages/SignIn";
 import Header from "../Header";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUser } from "../../features/userSlice";
 
 const AppContainer = styled.div`
   display: flex;
@@ -21,19 +22,39 @@ const AppContainer = styled.div`
 `;
 
 function ProtectedRoute() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, status } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (status !== "loading" && !user) {
-      navigate("/signIn");
+    async function getUserData() {
+      // Check if the user is not already loaded and the status is not loading
+      if (status !== "loading" && !user) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          try {
+            // Call the thunk to fetch user data using the token
+            // The fetchUser thunk should handle the API request and update the user data in the Redux store
+            dispatch(fetchUser(token));
+          } catch (error) {
+            // Redirect to the sign-in page if there is an error with the token or fetching data
+            navigate("/signIn");
+          }
+        } else {
+          // Redirect to the sign-in page if there is no token in the localStorage
+          navigate("/signIn");
+        }
+      }
     }
-  }, [user, status, navigate]);
+
+    getUserData();
+  }, [user, status, navigate, dispatch]);
 
   return user ? <User /> : null;
 }
 
 function AppRouter() {
+  
   return (
     <Router>
       <GlobaleStyles />

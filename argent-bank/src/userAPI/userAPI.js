@@ -28,7 +28,6 @@ export async function fetchUserProfile(token) {
 
   if (response.ok) {
     const data = await response.json();
-    console.log(data);
     return data;
   } else {
     throw new Error("Failed to fetch user profile");

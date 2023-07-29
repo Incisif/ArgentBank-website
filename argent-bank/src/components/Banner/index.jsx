@@ -1,28 +1,35 @@
 import styled from "styled-components";
 import bannerImg from "../../assets/bank-tree.jpeg";
+import { device } from "../../utils/styles/devices";
 
-const BannerWrapper = styled.div`
-  width: 100%;
-  position: relative;
-`;
-const BannerImg = styled.img`
-  background-position: 0 -50px;
-  object-fit: cover;
-  background-repeat: no-repeat;
-  height: 300px;
-  width: 100%;
+
+const BannerImg = styled.div`
+background-image: url('${bannerImg}');
+background-position: 0 -50px;
+background-size: cover;
+background-repeat: no-repeat;
+height: 300px;
+position: relative;
+@media ${device.laptop} {
+  height: 400px;
+  background-position: 0% 33%;
+}
 `;
 const BannerContent = styled.section`
+position: relative;
+top: -15rem;
+width: 200px;
+background: white;
+padding: 2rem;
+text-align: left;
+margin: 0 auto;
+@media ${device.laptop} {
   position: absolute;
-  top: 2rem;
-  width: 200px;
-  background: white;
-  padding: 2rem;
-  text-align: left;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-  margin: 0 auto;
+  top: 110px;
+  right: 50px;
+  width: 300px;
+  margin: 2rem;
+} 
 `;
 const BannerTextBold = styled.p`
   display: flex;
@@ -30,16 +37,22 @@ const BannerTextBold = styled.p`
   font-weight: bold;
   font-size: 1rem;
   margin: 0;
+  @media ${device.laptop} {
+    font-size: 1.5rem;
+  }
 `;
 const BannerTextNormal = styled.p`
   margin-bottom: 0;
   font-size: 0.9rem;
+  @media ${device.laptop} {
+    font-size: 1.5rem;
+  }
 `;
 
 function Banner() {
   return (
-    <BannerWrapper>
-      <BannerImg src={bannerImg} />
+    <>
+      <BannerImg />
       <BannerContent>
         <BannerTextBold>
           <span>No fees.</span>
@@ -51,7 +64,7 @@ function Banner() {
           <span>Argent Bank today!</span>
         </BannerTextNormal>
       </BannerContent>
-    </BannerWrapper>
+    </>
   );
 }
 

@@ -58,7 +58,6 @@ function User() {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
     // Dispatch the editUser action with the new user name and the retrieved token
-    console.log("name",editingUserName)
     dispatch(editUser({ token: token, userName: editingUserName }));
 
   };

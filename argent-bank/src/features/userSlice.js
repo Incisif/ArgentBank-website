@@ -54,7 +54,17 @@ export const editUser = createAsyncThunk(
     }
   }
 );
-
+// Helper function to update localStorage
+const updateUserInLocalStorage = (userName, state) => {
+  // If "remember me" is true, update the user info in localStorage
+  if (state.rememberMe) {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      user.userName = userName;
+      localStorage.setItem("user", JSON.stringify(user));
+    }
+  }
+};
 // Helper function to set loading state
 const startLoading = (state) => {
   state.status = "loading";
@@ -121,6 +131,7 @@ const userSlice = createSlice({
       .addCase(editUser.rejected, loadingFailed)
       .addCase(editUser.fulfilled, (state) => {
         state.user.userName = state.editingUser;
+        updateUserInLocalStorage(state.editingUser, state);
         state.editingUser = null;
         state.status = "succeeded";
       })

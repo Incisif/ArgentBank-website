@@ -42,9 +42,11 @@ export async function updateUsername(token, userName) {
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({userName}),
+    
   });
   if (response.ok) {
     const data = await response.json();
+    console.log(userName)
     return data;
   } else {
     throw new Error("Failed to update username");

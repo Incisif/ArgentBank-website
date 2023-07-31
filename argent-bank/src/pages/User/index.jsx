@@ -36,8 +36,12 @@ function User() {
   // Get user details from the redux store
   const user = useSelector((state) => state.user.user);
   const userFullName = user ? user.firstName + " " + user.lastName : null;
-  const userName = useSelector((state) => state.user.user?.userName);
+  const editingUserName = useSelector((state) => state.user.editingUser);
+
+  
+
   const dispatch = useDispatch();
+  
 
   // Local state to toggle the form visibility
   const [isFormVisible, setFormVisible] = useState(false);
@@ -54,8 +58,9 @@ function User() {
     const token =
       localStorage.getItem("token") || sessionStorage.getItem("token");
     // Dispatch the editUser action with the new user name and the retrieved token
+    console.log("name",editingUserName)
+    dispatch(editUser({ token: token, userName: editingUserName }));
 
-    dispatch(editUser({ userName, token }));
   };
   // Handler to cancel the edit mode and hide the form
   const handleCancel = () => {

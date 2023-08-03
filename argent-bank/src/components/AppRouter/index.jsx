@@ -30,7 +30,7 @@ function ProtectedRoute() {
     async function getUserData() {
       // Check if the user is not already loaded and the status is not loading
       if (status !== "loading" && !user) {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
         if (token) {
           try {
             // Call the thunk to fetch user data using the token
@@ -41,15 +41,14 @@ function ProtectedRoute() {
             navigate("/signIn");
           }
         } else {
-          // Redirect to the sign-in page if there is no token in the localStorage
+          // Redirect to the sign-in page if there is no token in the localStorage or sessionStorage
           navigate("/signIn");
         }
       }
     }
-
     getUserData();
   }, [user, status, navigate, dispatch]);
-
+  
   return user ? <User /> : null;
 }
 

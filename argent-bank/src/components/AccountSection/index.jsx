@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import TransactionButton from "../TransactionButton";
 import { device } from "../../utils/styles/devices";
+import PropTypes from "prop-types";
 
 const Container = styled.section`
   display: flex;
@@ -50,5 +51,10 @@ function AccountSection({ title, amount }) {
     </Container>
   );
 }
+
+AccountSection.propTypes = {
+  title: PropTypes.string.isRequired,
+  amount: PropTypes.number.isRequired,
+};
 
 export default AccountSection;

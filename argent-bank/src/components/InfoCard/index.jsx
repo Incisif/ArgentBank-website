@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 const InfoCardContainer = styled.div`
   flex: 1;
@@ -23,5 +24,12 @@ function InfoCard({ logo, title, text, alt }) {
     <InfoCardText>{text}</InfoCardText>
   </InfoCardContainer>)
 }
+
+InfoCard.propTypes = {
+  logo: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired,
+  alt: PropTypes.string.isRequired,
+};
 
 export default InfoCard;

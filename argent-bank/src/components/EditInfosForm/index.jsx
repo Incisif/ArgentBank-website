@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useSelector, useDispatch  } from "react-redux";
 import { updateEditingUserName } from "../../features/userSlice";
+import PropTypes from "prop-types";
 
 const Container = styled.section`
   width: 350px;
@@ -103,5 +104,10 @@ function EditInfosForm({ handleSave, handleCancel }) {
     </Container>
   );
 }
+
+EditInfosForm.propTypes = {
+  handleSave: PropTypes.func.isRequired,
+  handleCancel: PropTypes.func.isRequired,
+};
 
 export default EditInfosForm;

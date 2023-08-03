@@ -59,7 +59,7 @@ const Button = styled.button`
 `;
 function AuthForm() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
+  const token = useSelector((state) => state.user.token);
   const rememberMe = useSelector((state) => state.user.rememberMe);
   const navigate = useNavigate();
 
@@ -84,10 +84,10 @@ function AuthForm() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (token) {
       navigate("/user");
     }
-  }, [user, navigate]);
+  }, [token, navigate]);
 
   return (
     <Container>

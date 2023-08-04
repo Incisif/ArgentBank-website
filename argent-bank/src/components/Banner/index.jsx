@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import bannerImg from "../../assets/bank-tree.jpeg";
+import bannerImg from "../../assets/bank-tree.webp";
 import { device } from "../../utils/styles/devices";
 
 

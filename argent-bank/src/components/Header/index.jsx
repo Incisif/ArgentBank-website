@@ -1,5 +1,5 @@
 import Styled from "styled-components";
-import argentBankLogo from "../../assets/argentBankLogo.png";
+import argentBankLogo from "../../assets/argentBankLogo.webp";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../features/userSlice";

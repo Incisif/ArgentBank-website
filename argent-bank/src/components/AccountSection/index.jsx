@@ -44,7 +44,7 @@ function AccountSection({ title, amount }) {
     <Container>
       <ContentWrapper>
         <ContentTitle>{title}</ContentTitle>
-        <Amount>{amount}</Amount>
+        <Amount>${amount}</Amount>
         <Description>Available Balance</Description>
       </ContentWrapper>
       <TransactionButton text="View transactions" />

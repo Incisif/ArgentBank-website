@@ -30,7 +30,8 @@ function ProtectedRoute() {
     async function getUserData() {
       // Check if the user is not already loaded and the status is not loading
       if (status !== "loading" && !user) {
-        const token = localStorage.getItem("token") || sessionStorage.getItem("token");
+        const token =
+          localStorage.getItem("token") || sessionStorage.getItem("token");
         if (token) {
           try {
             // Call the thunk to fetch user data using the token
@@ -48,12 +49,11 @@ function ProtectedRoute() {
     }
     getUserData();
   }, [user, status, navigate, dispatch]);
-  
+
   return user ? <User /> : null;
 }
 
 function AppRouter() {
-  
   return (
     <Router>
       <GlobaleStyles />
